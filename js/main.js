@@ -1,3 +1,5 @@
+// main.js
+
 import {
   carregarTreinos,
   salvarTreino as salvarTreinoService,
@@ -14,7 +16,8 @@ import {
   abrirModalVideo,
   abrirModalEdicao,
   abrirModalAdicaoExercicio,
-} from "./modalHandler.js"; // Adicionada a importação de abrirModalEdicaoParaAdicionar
+  fecharModalEdicao,
+} from "./modalHandler.js";
 
 // Função para abrir o modal de edição de exercício
 window.abrirModalEdicao = function (treinoId, exercicioIndex) {
@@ -46,16 +49,16 @@ window.abrirModalEdicao = function (treinoId, exercicioIndex) {
     </div>
   `;
 
-  modalEdicao.style.display = "flex";
+  modalEdicao.classList.add("ativo");
 };
 
 // Função para fechar o modal de edição ou adição
 window.fecharModalEdicao = function () {
   const modalEdicao = document.getElementById("modalEdicao");
-  modalEdicao.style.display = "none";
+  modalEdicao.classList.remove("ativo");
 };
 
-// Função para abrir o modal de edição de treino (definida como global)
+// Função para abrir o modal de edição de treino
 window.abrirModalTreinoEdicao = function (treinoId = null) {
   const modalEdicao = document.getElementById("modalEdicao");
   const modalContent = modalEdicao.querySelector(".modal-content");
@@ -77,7 +80,7 @@ window.abrirModalTreinoEdicao = function (treinoId = null) {
     </div>
   `;
 
-  modalEdicao.style.display = "flex";
+  modalEdicao.classList.add("ativo");
 };
 
 // Função para abrir o modal de adição de exercício
@@ -105,7 +108,7 @@ window.abrirModalEdicaoParaAdicionar = function (treinoId) {
     </div>
   `;
 
-  modalEdicao.style.display = "flex";
+  modalEdicao.classList.add("ativo");
 };
 
 // Função para salvar novo ou editar treino
@@ -271,7 +274,6 @@ window.salvarNovoExercicio = async function (treinoId) {
 window.deletarExercicioEdicao = async function (treinoId, exercicioIndex) {
   if (confirm("Tem certeza que deseja deletar este exercício?")) {
     try {
-      // Chama o serviço para deletar o exercício no banco de dados
       await deletarExercicioService(treinoId, exercicioIndex);
 
       Toastify({
@@ -286,8 +288,8 @@ window.deletarExercicioEdicao = async function (treinoId, exercicioIndex) {
 
       // Atualiza a lista global de exercícios sem recarregar a página
       const treino = window.treinos.find((t) => t.id === treinoId);
-      treino.exercicios.splice(exercicioIndex, 1); // Remove o exercício da lista global
-      renderizarExercicios(treino); // Renderiza a nova lista de exercícios
+      treino.exercicios.splice(exercicioIndex, 1);
+      renderizarExercicios(treino);
     } catch (error) {
       console.error("Erro ao deletar o exercício:", error);
       alert("Erro ao deletar o exercício. Tente novamente.");
@@ -296,7 +298,7 @@ window.deletarExercicioEdicao = async function (treinoId, exercicioIndex) {
 };
 
 // Função para abrir o modal de vídeo
-window.abrirVideo = abrirModalVideo;
+window.abrirModalVideo = abrirModalVideo;
 
 // Renderiza os treinos ao carregar a página
 document.addEventListener("DOMContentLoaded", async () => {
@@ -339,15 +341,13 @@ function renderizarTreinos(treinos) {
 // Função para renderizar os exercícios dentro do modal de visualização
 function renderizarExercicios(treino) {
   const exerciciosLista = document.getElementById("exerciciosLista");
-  exerciciosLista.innerHTML = ""; // Limpa os exercícios anteriores
+  exerciciosLista.innerHTML = "";
 
-  // Verifica se treino.exercicios existe e é um array
   if (Array.isArray(treino.exercicios) && treino.exercicios.length > 0) {
     treino.exercicios.forEach((exercicio, index) => {
       const exercicioItem = document.createElement("div");
       exercicioItem.classList.add("exercicio-item");
 
-      // Exibe os detalhes do exercício de forma não editável
       exercicioItem.innerHTML = `
         <h4>${exercicio.nome}</h4>
         <p>Séries: ${exercicio.series || "-"}</p>
@@ -368,27 +368,20 @@ function renderizarExercicios(treino) {
       exerciciosLista.appendChild(exercicioItem);
     });
   } else {
-    // Se não houver exercícios, exibe uma mensagem
     exerciciosLista.innerHTML = "<p>Nenhum exercício cadastrado.</p>";
   }
 
   // Adicionar botão para adicionar novo exercício
   const adicionarExercicioBtn = document.createElement("button");
   adicionarExercicioBtn.textContent = "Adicionar Exercício";
-  adicionarExercicioBtn.onclick = () => abrirModalAdicaoExercicio(treino.id);
+  adicionarExercicioBtn.onclick = () =>
+    abrirModalEdicaoParaAdicionar(treino.id);
   exerciciosLista.appendChild(adicionarExercicioBtn);
 }
 
-// Função para abrir o modal de vídeo
+// Disponibilizando funções globais para serem acessíveis no HTML
+window.abrirModalEdicao = abrirModalEdicao;
+window.abrirModalEdicaoParaAdicionar = abrirModalEdicaoParaAdicionar;
+window.fecharModalEdicao = fecharModalEdicao;
 window.abrirModalVideo = abrirModalVideo;
-
-// Renderiza os treinos ao carregar a página
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const treinos = await carregarTreinos();
-    window.treinos = treinos;
-    renderizarTreinos(window.treinos);
-  } catch (error) {
-    console.error("Erro ao carregar os treinos:", error);
-  }
-});
+window.abrirModalTreino = abrirModalTreino;
