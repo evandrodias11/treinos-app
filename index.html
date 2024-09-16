@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <title>Minha Rotina de Treino</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Minha Rotina de Treino</h1>
+    </header>
+    <main>
+      <section id="treinos">
+        <h2>Escolha seu Treino</h2>
+        <div class="treino-lista">
+          <!-- Aqui vão aparecer os treinos carregados do Firebase -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal para detalhes dos exercícios -->
+    <div id="treinoModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="treinoModalTitle"></h2>
+        <div id="exerciciosLista"></div>
+      </div>
+    </div>
+
+    <!-- Modal para vídeos/GIFs dos exercícios -->
+    <div id="videoModal" class="modal">
+      <div class="modal-content">
+        <span class="close-video">&times;</span>
+        <h2>Exemplo do Exercício</h2>
+        <div id="videoContainer">
+          <!-- O vídeo/GIF será inserido aqui -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para edição do exercício -->
+    <div id="modalEdicao" class="modal">
+      <div class="modal-content">
+        <span class="close-edicao" onclick="fecharModalEdicao()">&times;</span>
+        <!-- O conteúdo do modal será preenchido dinamicamente -->
+      </div>
+    </div>
+
+    <!-- Firebase Config -->
+    <script type="module">
+      // Import the Firebase functions you need from the SDKs
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        updateDoc,
+        doc,
+        deleteDoc,
+      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDvm622azP1rA3U0fhyi9_G4cncmQGcD4U",
+        authDomain: "treinos-app-17791.firebaseapp.com",
+        projectId: "treinos-app-17791",
+        storageBucket: "treinos-app-17791.appspot.com",
+        messagingSenderId: "29487857882",
+        appId: "1:29487857882:web:e5f688bf173b2f3c98a5e3",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Restante do código JavaScript vai aqui
+    </script>
+
+    <script src="js/main.js" type="module"></script>
+  </body>
+</html>
