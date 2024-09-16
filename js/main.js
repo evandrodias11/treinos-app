@@ -21,41 +21,17 @@ import {
 
 // Função para abrir o modal de edição de exercício
 window.abrirModalEdicao = function (treinoId, exercicioIndex) {
-  const modalEdicao = document.getElementById("modalEdicao");
-  const modalContent = modalEdicao.querySelector(".modal-content");
+  abrirModalEdicao(treinoId, exercicioIndex);
+};
 
-  const treino = window.treinos.find((t) => t.id === treinoId);
-  const exercicio = treino.exercicios[exercicioIndex];
-
-  modalContent.innerHTML = `
-    <span class="close-edicao" onclick="fecharModalEdicao()">&times;</span>
-    <label for="inputNome">Nome:</label>
-    <input type="text" id="inputNome" value="${exercicio.nome}">
-    <label for="inputSeries">Séries:</label>
-    <input type="number" id="inputSeries" value="${exercicio.series || ""}">
-    <label for="inputRepeticoes">Repetições:</label>
-    <input type="number" id="inputRepeticoes" value="${
-      exercicio.repeticoes || ""
-    }">
-    <label for="inputPeso">Peso (kg):</label>
-    <input type="number" id="inputPeso" value="${exercicio.peso || ""}">
-    <label for="inputTempo">Tempo (min):</label>
-    <input type="number" id="inputTempo" value="${exercicio.tempo || ""}">
-    <label for="inputVideoUrl">URL do Vídeo:</label>
-    <input type="text" id="inputVideoUrl" value="${exercicio.videoUrl || ""}">
-    <div class="button-container">
-      <button onclick="salvarExercicioEdicao('${treinoId}', ${exercicioIndex})">Salvar</button>
-      <button onclick="fecharModalEdicao()">Cancelar</button>
-    </div>
-  `;
-
-  modalEdicao.classList.add("ativo");
+// Função para abrir o modal de adição de exercício
+window.abrirModalEdicaoParaAdicionar = function (treinoId) {
+  abrirModalAdicaoExercicio(treinoId);
 };
 
 // Função para fechar o modal de edição ou adição
 window.fecharModalEdicao = function () {
-  const modalEdicao = document.getElementById("modalEdicao");
-  modalEdicao.classList.remove("ativo");
+  fecharModalEdicao();
 };
 
 // Função para abrir o modal de edição de treino
@@ -76,34 +52,6 @@ window.abrirModalTreinoEdicao = function (treinoId = null) {
     <textarea id="inputDescricaoTreino">${treino.descricao}</textarea>
     <div class="button-container">
       <button onclick="salvarTreinoEdicao('${treinoId || ""}')">Salvar</button>
-      <button onclick="fecharModalEdicao()">Cancelar</button>
-    </div>
-  `;
-
-  modalEdicao.classList.add("ativo");
-};
-
-// Função para abrir o modal de adição de exercício
-window.abrirModalEdicaoParaAdicionar = function (treinoId) {
-  const modalEdicao = document.getElementById("modalEdicao");
-  const modalContent = modalEdicao.querySelector(".modal-content");
-
-  modalContent.innerHTML = `
-    <span class="close-edicao" onclick="fecharModalEdicao()">&times;</span>
-    <label for="inputNome">Nome:</label>
-    <input type="text" id="inputNome" placeholder="Nome do exercício">
-    <label for="inputSeries">Séries:</label>
-    <input type="number" id="inputSeries" placeholder="Número de séries">
-    <label for="inputRepeticoes">Repetições:</label>
-    <input type="number" id="inputRepeticoes" placeholder="Número de repetições">
-    <label for="inputPeso">Peso (kg):</label>
-    <input type="number" id="inputPeso" placeholder="Peso em kg">
-    <label for="inputTempo">Tempo (min):</label>
-    <input type="number" id="inputTempo" placeholder="Tempo em minutos">
-    <label for="inputVideoUrl">URL do Vídeo:</label>
-    <input type="text" id="inputVideoUrl" placeholder="URL do vídeo">
-    <div class="button-container">
-      <button onclick="salvarNovoExercicio('${treinoId}')">Salvar</button>
       <button onclick="fecharModalEdicao()">Cancelar</button>
     </div>
   `;
@@ -348,15 +296,18 @@ function renderizarExercicios(treino) {
       const exercicioItem = document.createElement("div");
       exercicioItem.classList.add("exercicio-item");
 
+      const temVideo = exercicio.videoUrl && exercicio.videoUrl.trim() !== "";
+      const botaoVerVideo = temVideo
+        ? `<button onclick="abrirModalVideo('${exercicio.videoUrl}')">Ver vídeo</button>`
+        : "";
+
       exercicioItem.innerHTML = `
         <h4>${exercicio.nome}</h4>
         <p>Séries: ${exercicio.series || "-"}</p>
         <p>Repetições: ${exercicio.repeticoes || "-"}</p>
         <p>Peso: ${exercicio.peso || "-"} kg</p>
         <p>Tempo: ${exercicio.tempo || "-"} min</p>
-        <button onclick="abrirModalVideo('${
-          exercicio.videoUrl
-        }')">Ver vídeo</button>
+        ${botaoVerVideo}
         <button onclick="abrirModalEdicao('${
           treino.id
         }', ${index})">Editar</button>
@@ -379,9 +330,8 @@ function renderizarExercicios(treino) {
   exerciciosLista.appendChild(adicionarExercicioBtn);
 }
 
-// Disponibilizando funções globais para serem acessíveis no HTML
-window.abrirModalEdicao = abrirModalEdicao;
-window.abrirModalEdicaoParaAdicionar = abrirModalEdicaoParaAdicionar;
+// Disponibilizando funções globais
+window.abrirModalEdicaoParaAdicionar = abrirModalAdicaoExercicio;
 window.fecharModalEdicao = fecharModalEdicao;
 window.abrirModalVideo = abrirModalVideo;
 window.abrirModalTreino = abrirModalTreino;

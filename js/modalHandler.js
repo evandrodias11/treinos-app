@@ -1,13 +1,8 @@
 // modalHandler.js
 
-import { db } from "./firebaseConfig.js";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+// Remova a importação do Toastify, pois ele já está disponível globalmente
+// import Toastify from 'https://cdn.jsdelivr.net/npm/toastify-js';
 
-// Função para abrir o modal de treino com visualização dos exercícios
 export function abrirModalTreino(treino, renderizarExercicios) {
   const treinoModalTitle = document.getElementById("treinoModalTitle");
   treinoModalTitle.textContent = treino.nome;
@@ -31,8 +26,21 @@ export function abrirModalTreino(treino, renderizarExercicios) {
   };
 }
 
-// Função para abrir o modal de vídeo
 export function abrirModalVideo(url) {
+  // Verifica se a URL é válida
+  if (!url || url.trim() === "") {
+    Toastify({
+      text: "Nenhum vídeo disponível para este exercício.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      style: {
+        background: "#f44336",
+      },
+    }).showToast();
+    return;
+  }
+
   const videoContainer = document.getElementById("videoContainer");
   const videoModal = document.getElementById("videoModal");
 
@@ -75,7 +83,6 @@ export function abrirModalVideo(url) {
   };
 }
 
-// Função para abrir o modal de edição de exercício
 export function abrirModalEdicao(treinoId, exercicioIndex) {
   const modalEdicao = document.getElementById("modalEdicao");
   const modalContent = modalEdicao.querySelector(".modal-content");
@@ -108,7 +115,6 @@ export function abrirModalEdicao(treinoId, exercicioIndex) {
   modalEdicao.classList.add("ativo");
 }
 
-// Função para abrir o modal de adição de exercício
 export function abrirModalAdicaoExercicio(treinoId) {
   const modalEdicao = document.getElementById("modalEdicao");
   const modalContent = modalEdicao.querySelector(".modal-content");
@@ -136,7 +142,6 @@ export function abrirModalAdicaoExercicio(treinoId) {
   modalEdicao.classList.add("ativo");
 }
 
-// Função para fechar o modal de edição
 export function fecharModalEdicao() {
   const modalEdicao = document.getElementById("modalEdicao");
   modalEdicao.classList.remove("ativo");
